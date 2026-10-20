@@ -1,0 +1,84 @@
+# SO lets talk about RAG , why we need it ,
+# We know llms are neural network based models which uses transformers based architecture to answer our questions
+# Now it answers us from the parametric knowledege it has the parameters it has been trained on
+# Now if we want to access this kparametric knowledge , we use PROMPTS
+# but there can be situations in which this is not enough
+# These 3 situations are :
+# 1) Private Data -> If we ask an llm about private data like a diary i have written for myself , it will not be able to
+# answer , because it has now knowledge of it , nor it is on internet , so it can not even search for it
+
+# 2) Recent Data -> If we have an llm which has not access to internet and it is trained on monthly basis , it will not be able to answer about recent news or data
+
+# 3) The llm's can also hallucinate means they can give wrong answers
+
+# One way to solve this is Fine Tuning means even if the model is pretrained on data , we can again train it on a small dataset as per requirement 
+# for example we want it to answer fom our notes so we can train t on those notes 
+
+# There are 3 ways to do fine tuning :
+# Supervised tuning --> in this we train the model on key value pairs of prompt and desired outputs
+# Continued training --> training on unsupervised data
+# RLHF
+
+# the flow is like ,,, collect data --> choose a method --> train for a few epochs --> evaluate and safety test
+
+# But fine tuning has a lot of problems :
+# 1) First it has to be trained each and every time we wantit to answer on a new data
+# 2) We need technical expertise to do that 
+# 3) this is computationally very expensive
+
+# There is one more way to solve it which is In-Context learrning 
+
+# In-Context learning --> is a core capability of LLM's where the models 
+# learn to solve a task purely on the basis of the examples given in the prompt without being trained or updating the weights
+
+# Now this is an emergent property means this is a behaviour which suddenly appeared in models affter reaching certain scale and complexity
+
+# Now we can even give the full context in the prompt rather than example and make the llm to answer our question , 
+# like we can givve our full diary in the prompt only , this is 
+# RAG (Retrieval Augmented Generation)
+# RAG is a way of making the language model faster by giving it extra information at the time we ask the question from it 
+
+# There are 4 stages in rag :
+# 1) Indexing --> Here we will create or collect the knowledge base which will act as the context to answer our query
+# 2) Retrieval --> Now we do not use the full context , we find the part of the context in which the answer to the query can be present and thus we get that part
+# 3) Augmentation --> We give the query with the important part to the llm to answer our query
+# 4) Generation --> Then llm generates the final answer
+
+############### INDEXING ***************************
+
+#  Indexing is the process of preparing knowledge base so that it can be efficiently used at query time 
+# It has 4 steps -->
+
+# 1) Document Ingestion --> Your load your knowledge source into the memory
+# eg: pdf reports , word document , youtube transcript , github repos etc.
+# We can use document loaders here like : PyPDFLoader , YoutubeLoader etc
+
+# 2) Text chunking --> Break large document into small , semantically meaningful chunks ,
+# because for answer a query we cannot give the llm the whole knowledge base , because llm's have a contect window for a conversation
+# and the whole external knowledge base might not fit into it 
+# ALso Smaller chunks provides better semantic search 
+# eg: RecursiveTextSplitters , SemanticChunkers
+
+# 3) Embedding Generation -> Convert each chunk into dense vector(embedding) that captures the meaning 
+# Because it helps us to implement semantic search between the query and the chunks , so as to knwo which query can have the answer
+# eg of embedding Generators : OpenAIEmbeddings , SemanticTransformerEmbeddings
+
+# 4) Store the embeddings in vector store/database --> store the vectors along with the original chunk text + metadata in a vector database
+# This helps in menaging store and better and efficient semantic search and a lot of other database features 
+# eg of vector stores : chroma , faiss , pinecone , Qdrant
+
+##################### Retrieval ############################
+
+# Now when a query comes then we have to get the relevant chunks so as to give them to the llm to get the answer , because it is not effieient to give the whole knowledge base
+
+# Retrieval -> is a real time process of finding the most relevant pieces of information from the pre built index based on user question 
+
+################# AUgmentation ##########################
+
+# Now we give the query and the revelant data (combined chunks) to the llm 
+
+############### Generation##################
+
+# The llm generates the answer and if the answer is not there in the data given , we can tell it to say i dont know , so it will not even halucinate
+
+
